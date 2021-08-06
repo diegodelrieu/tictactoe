@@ -19,3 +19,11 @@ Run the following command to start playing in your terminal.
 npm run start
 ```
 
+
+## 🧪 Tests
+
+There are some very basic tests on the gameState function that you can run using 
+
+```sh
+npx jest
+```

@@ -4,7 +4,11 @@ import { GameState } from 'src';
 const isntEmptyString = (str: string) => str !== ' ';
 
 export const getStateOfGame = (table: CliTable): GameState => {
-  let gameState: GameState = null;
+  let gameState: GameState = {
+    winner: null,
+    coordinates: null,
+    status: 'ongoing',
+  };
   for (const [index, row] of table.entries()) {
     if (row[0] === row[1] && row[1] === row[2]) {
       if (isntEmptyString(row[0])) {
@@ -15,6 +19,7 @@ export const getStateOfGame = (table: CliTable): GameState => {
             [index, 1],
             [index, 2],
           ],
+          status: 'finished',
         };
       }
     }
@@ -31,6 +36,7 @@ export const getStateOfGame = (table: CliTable): GameState => {
             [1, index],
             [2, index],
           ],
+          status: 'finished',
         };
       }
     }
@@ -45,6 +51,7 @@ export const getStateOfGame = (table: CliTable): GameState => {
               [1, 1],
               [2, 2],
             ],
+            status: 'finished',
           };
         }
       }
@@ -52,20 +59,29 @@ export const getStateOfGame = (table: CliTable): GameState => {
       if (table[0][2] === table[1][1] && table[1][1] === table[2][0]) {
         if (isntEmptyString(table[0][2])) {
           gameState = {
-            winner: table[0][0],
+            winner: table[0][2],
             coordinates: [
               [0, 2],
               [1, 1],
               [2, 0],
             ],
+            status: 'finished',
           };
         }
       }
     }
-    if (gameState) {
-      return gameState;
-    }
   }
-  console.log(table.toString());
+
+  const isDraw =
+    table.filter((row) => row.filter((cell: string) => cell === ' ').length > 0)
+      .length === 0 && !gameState.winner;
+
+  if (isDraw) {
+    return {
+      winner: null,
+      coordinates: null,
+      status: 'finished',
+    };
+  }
   return gameState;
 };

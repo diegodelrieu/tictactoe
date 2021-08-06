@@ -5,6 +5,7 @@ import {
   displayNextRoundMessage,
   displaySpotTakenError,
   displayStartMessage,
+  displayTable,
 } from './messages';
 import { getStateOfGame } from './state';
 
@@ -16,8 +17,9 @@ export type TicTacToeMove = {
 export type Player = 'X' | 'O';
 
 export type GameState = null | {
-  winner: Player;
-  coordinates: number[][];
+  winner: Player | null;
+  coordinates: number[][] | null;
+  status: 'ongoing' | 'finished';
 };
 
 const playARound = async ({
@@ -36,7 +38,6 @@ const playARound = async ({
     return { status: 'invalid' };
   }
   table[nextMove.row][nextMove.column] = nextPlayer;
-
   return { status: 'valid' };
 };
 
@@ -46,7 +47,8 @@ const startTicTacToe = async () => {
   let nextPlayer: Player = 'X';
   let gameState = getStateOfGame(table);
 
-  while (!gameState) {
+  while (gameState?.status !== 'finished') {
+    displayTable(table);
     displayNextRoundMessage(nextPlayer);
     const { status } = await playARound({ nextPlayer, table });
     gameState = getStateOfGame(table);

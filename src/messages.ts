@@ -11,13 +11,22 @@ export const displayEndMessage = ({
   table: CliTable;
   gameState: GameState;
 }): void => {
-  gameState!.coordinates.forEach((coordinate) => {
+  gameState?.coordinates?.forEach((coordinate) => {
     table[coordinate[0]][coordinate[1]] = chalk.green(
       table[coordinate[0]][coordinate[1]],
     );
   });
+  displayTable(table);
 
-  console.log(table.toString());
+  if (!gameState?.winner) {
+    return console.log(
+      boxen(
+        chalk.yellow(`====================== Draw ! ======================`),
+        { padding: 1, margin: 1, borderStyle: 'double' },
+      ),
+    );
+  }
+
   console.log(
     boxen(
       chalk.green(
@@ -52,3 +61,6 @@ export const displayNextRoundMessage = (player: Player): void => {
 
 export const displaySpotTakenError = (): void =>
   console.log(chalk.red(`A player is already in that space.`));
+
+export const displayTable = (table: CliTable): void =>
+  console.log(table.toString());
